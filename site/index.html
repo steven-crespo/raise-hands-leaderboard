@@ -1,83 +1,625 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Raise Hand Winners Leaderboard</title>
+  <title>Raise Hand Winners</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; line-height: 1.4; }
-    header { display: flex; gap: 16px; flex-wrap: wrap; align-items: baseline; }
-    h1 { margin: 0; font-size: 22px; }
-    .controls { display: flex; gap: 10px; align-items: center; }
-    select { padding: 6px 8px; }
-    table { border-collapse: collapse; width: 100%; margin-top: 14px; }
-    th, td { border-bottom: 1px solid #e5e5e5; padding: 10px 8px; text-align: left; }
-    th { font-weight: 600; }
-    .muted { color: #666; }
-    .grid { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 18px; }
-    .card { border: 1px solid #e5e5e5; border-radius: 12px; padding: 14px; }
-    .card h2 { margin: 0 0 8px; font-size: 16px; }
-    ul { margin: 8px 0 0; padding-left: 18px; }
-    code { background: #f6f6f6; padding: 2px 6px; border-radius: 6px; }
+    :root {
+      --bg: #fafafa;
+      --panel: #ffffff;
+      --text: #111;
+      --muted: #666;
+      --border: #e7e7e7;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 10px 30px rgba(0, 0, 0, .06);
+      --radius: 16px;
+      --pad: 16px;
+      --gap: 14px;
+      --accent: #111;
+      --accent2: #2b2b2b;
+      --chip: #f2f2f2;
+      --chipActive: #111;
+      --chipActiveText: #fff;
+      --good: #0b7;
+      --warn: #c60;
+      --focus: 0 0 0 3px rgba(0, 0, 0, .12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.35;
+    }
+
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 24px 18px 40px;
+    }
+
+    header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #111, #444);
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.2px;
+    }
+
+    .sub {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .statusline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      justify-content: flex-end;
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 999px;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+      white-space: nowrap;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--good);
+    }
+
+    .dot.warn {
+      background: var(--warn);
+    }
+
+    .dot.off {
+      background: #bbb;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: var(--pad);
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: -0.1px;
+    }
+
+    .cardhead {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    /* Filter bar */
+    .filters {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .filterRow {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .chip {
+      border: 1px solid var(--border);
+      background: var(--chip);
+      color: var(--accent);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .04s ease, background .15s ease, border-color .15s ease;
+    }
+
+    .chip:hover {
+      transform: translateY(-1px);
+    }
+
+    .chip.active {
+      background: var(--chipActive);
+      color: var(--chipActiveText);
+      border-color: var(--chipActive);
+    }
+
+    select,
+    input[type="date"],
+    button {
+      font: inherit;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #fff;
+      padding: 9px 10px;
+      font-size: 13px;
+    }
+
+    select:focus,
+    input[type="date"]:focus,
+    button:focus,
+    .chip:focus {
+      outline: none;
+      box-shadow: var(--focus);
+    }
+
+    button {
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+      border-color: var(--accent);
+      padding: 9px 12px;
+    }
+
+    button.secondary {
+      background: #fff;
+      color: var(--accent);
+      border-color: var(--border);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .split {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-right: 6px;
+    }
+
+    .activeSummary {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f5f5f5;
+      border: 1px solid var(--border);
+      font-size: 12.5px;
+      color: #222;
+    }
+
+    .tag strong {
+      font-weight: 650;
+    }
+
+    /* Table */
+    .tableWrap {
+      overflow: auto;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 520px;
+      background: #fff;
+    }
+
+    th,
+    td {
+      padding: 12px 12px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      vertical-align: middle;
+      font-size: 13.5px;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background: #fcfcfc;
+      z-index: 1;
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .rankCell {
+      width: 64px;
+      color: var(--muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .winsCell {
+      width: 90px;
+      font-variant-numeric: tabular-nums;
+      font-weight: 650;
+    }
+
+    .teamCell {
+      width: 120px;
+      color: #222;
+    }
+
+    .winnerCell {
+      font-weight: 700;
+      letter-spacing: -0.1px;
+    }
+
+    .medal {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      background: #f6f6f6;
+      border: 1px solid var(--border);
+      margin-right: 8px;
+      font-size: 16px;
+    }
+
+    .rowFade {
+      animation: fadein .14s ease-out;
+    }
+
+    @keyframes fadein {
+      from {
+        opacity: 0;
+        transform: translateY(2px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .empty {
+      padding: 14px 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* Recent activity */
+    details {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    summary {
+      list-style: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      user-select: none;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .chev {
+      width: 10px;
+      height: 10px;
+      border-right: 2px solid #666;
+      border-bottom: 2px solid #666;
+      transform: rotate(-45deg);
+      transition: transform .15s ease;
+      margin-left: 8px;
+      flex: 0 0 auto;
+    }
+
+    details[open] .chev {
+      transform: rotate(45deg);
+    }
+
+    .recentBody {
+      padding: 0 16px 16px;
+      color: #222;
+    }
+
+    .recentBody ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+      color: #222;
+    }
+
+    .recentBody li {
+      margin: 6px 0;
+      color: #222;
+      font-size: 13px;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding: 18px 14px 28px;
+      }
+
+      table {
+        min-width: 460px;
+      }
+
+      .statusline {
+        justify-content: flex-start;
+      }
+    }
   </style>
 </head>
+
 <body>
-  <header>
-    <h1>Raise Hand Winners Leaderboard</h1>
-    <div class="controls">
-      <label for="teamSelect" class="muted">Team:</label>
-      <select id="teamSelect"></select>
-      <span id="status" class="muted"></span>
-    </div>
-  </header>
-
-  <div class="grid">
-    <div class="card">
-      <h2>Leaderboard</h2>
-      <table id="leaderboardTable" aria-label="Leaderboard table">
-        <thead>
-          <tr>
-            <th>Winner</th>
-            <th>Team</th>
-            <th>Wins</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <div id="emptyState" class="muted" style="display:none; margin-top:10px;">
-        No rows to display.
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="logo">RH</div>
+        <div>
+          <h1>Raise Hand Winners</h1>
+          <div class="sub">A tiny leaderboard from your Obsidian daily notes.</div>
+        </div>
       </div>
-    </div>
 
-    <div class="card" id="recentCard" style="display:none;">
-      <h2>Recent Events (optional)</h2>
-      <div class="muted">Loaded from <code>events.json</code> if present.</div>
-      <ul id="recentList"></ul>
+      <div class="statusline">
+        <span class="pill" id="healthPill" title="Data health">
+          <span class="dot off" id="healthDot"></span>
+          <span id="healthText">Loading…</span>
+        </span>
+        <span class="pill" title="Where data is loaded from">
+          <span class="mono">data/leaderboard.json + data/events.json</span>
+        </span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Filters -->
+      <div class="card">
+        <div class="cardhead">
+          <h2>Filters</h2>
+          <div class="activeSummary" id="activeSummary"></div>
+          <button id="copyLinkBtn" class="secondary" type="button">Copy link</button>
+        </div>
+
+        <div class="filters">
+          <div class="filterRow">
+            <span class="label">Date</span>
+            <div class="chips" role="group" aria-label="Date presets">
+              <button class="chip" id="preset_all" type="button">All time</button>
+              <button class="chip" id="preset_7" type="button">Last 7</button>
+              <button class="chip" id="preset_30" type="button">Last 30</button>
+              <button class="chip" id="preset_custom" type="button">Custom</button>
+            </div>
+
+            <div class="split" id="customDates" style="display:none;">
+              <span class="label">Start</span>
+              <input id="startDate" type="date" />
+              <span class="label">End</span>
+              <input id="endDate" type="date" />
+            </div>
+
+            <button id="applyBtn" type="button" title="Apply filters">Apply</button>
+            <button id="resetBtn" type="button" class="secondary" title="Reset to defaults">Reset</button>
+          </div>
+
+          <div class="filterRow">
+            <span class="label">Team</span>
+            <select id="teamSelect" title="Filter by team"></select>
+            <span class="hint" id="status"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="card">
+        <div class="cardhead">
+          <h2>Leaderboard</h2>
+          <div class="hint">Top 3 get medals. Date-filtered views compute from <span class="mono">events.json</span>.
+          </div>
+        </div>
+
+        <div class="tableWrap" aria-label="Leaderboard table">
+          <table>
+            <thead>
+              <tr>
+                <th style="width:72px;">Rank</th>
+                <th>Winner</th>
+                <th style="width:140px;">Team</th>
+                <th style="width:90px;">Wins</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+          <div class="empty" id="emptyState" style="display:none;"></div>
+        </div>
+      </div>
+
+      <!-- Recent activity -->
+      <details id="recentDetails">
+        <summary>
+          <div>
+            <strong>Recent activity</strong>
+            <div class="sub" id="recentSub" style="margin:2px 0 0;">Latest winners from <span
+                class="mono">events.json</span>.</div>
+          </div>
+          <div class="chev" aria-hidden="true"></div>
+        </summary>
+        <div class="recentBody">
+          <ul id="recentList"></ul>
+        </div>
+      </details>
     </div>
   </div>
 
   <script>
     const DATA_DIR = "./data";
+    const DEFAULT_TEAM = "GAMEON";
+    const TIMEZONE = "America/Los_Angeles";
 
-    const teamSelect = document.getElementById("teamSelect");
-    const tableBody = document.querySelector("#leaderboardTable tbody");
+    // UI
+    const tbody = document.getElementById("tbody");
     const emptyState = document.getElementById("emptyState");
+    const teamSelect = document.getElementById("teamSelect");
     const statusEl = document.getElementById("status");
 
-    const recentCard = document.getElementById("recentCard");
+    const presetBtns = {
+      all: document.getElementById("preset_all"),
+      "7": document.getElementById("preset_7"),
+      "30": document.getElementById("preset_30"),
+      custom: document.getElementById("preset_custom"),
+    };
+
+    const copyLinkBtn = document.getElementById("copyLinkBtn");
+
+    const customDatesWrap = document.getElementById("customDates");
+    const startDateInput = document.getElementById("startDate");
+    const endDateInput = document.getElementById("endDate");
+    const applyBtn = document.getElementById("applyBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    const activeSummary = document.getElementById("activeSummary");
+
+    const recentDetails = document.getElementById("recentDetails");
     const recentList = document.getElementById("recentList");
+    const recentSub = document.getElementById("recentSub");
 
-    function setStatus(msg) {
-      statusEl.textContent = msg || "";
+    const healthDot = document.getElementById("healthDot");
+    const healthText = document.getElementById("healthText");
+
+    // Data
+    let allLeaderboardRows = []; // precomputed all-time
+    let allEvents = [];          // source of truth
+    let teams = [];
+
+    // State (persisted)
+    const STORAGE_KEY = "raisehands.ui.state.v1";
+    const state = {
+      preset: "7",          // default: last 7 (better for daily usage)
+      team: "__ALL__",
+      start: "",
+      end: "",
+      recentOpen: false
+    };
+
+    function setStatus(msg) { statusEl.textContent = msg || ""; }
+    function unique(arr) { return [...new Set(arr)]; }
+
+    function dateToYMDInTZ(dateObj) {
+      const opts = { timeZone: TIMEZONE, year: "numeric", month: "2-digit", day: "2-digit" };
+      return new Intl.DateTimeFormat("en-CA", opts).format(dateObj); // YYYY-MM-DD
+    }
+    function todayYMDInTZ() { return dateToYMDInTZ(new Date()); }
+
+    function setHealth(mode, text) {
+      // mode: "ok" | "warn" | "off"
+      healthDot.className = "dot " + (mode === "ok" ? "" : mode);
+      healthText.textContent = text;
     }
 
-    function unique(arr) {
-      return [...new Set(arr)];
+    function medalForRank(rank) {
+      if (rank === 1) return "🥇";
+      if (rank === 2) return "🥈";
+      if (rank === 3) return "🥉";
+      return null;
     }
 
-    function renderTeamSelect(teams) {
+    function renderTeamSelect() {
       teamSelect.innerHTML = "";
-
       const optAll = document.createElement("option");
       optAll.value = "__ALL__";
       optAll.textContent = "All Teams";
@@ -91,104 +633,404 @@
       }
     }
 
-    function renderTable(rows) {
-      tableBody.innerHTML = "";
+    function setActivePreset(p) {
+      state.preset = p;
+      for (const k of Object.keys(presetBtns)) {
+        presetBtns[k].classList.toggle("active", k === p);
+      }
+      customDatesWrap.style.display = (p === "custom") ? "flex" : "none";
+    }
 
-      if (!rows.length) {
+    function humanRangeLabel() {
+      if (state.preset === "all") return "All time";
+      if (state.preset === "7") return "Last 7 days";
+      if (state.preset === "30") return "Last 30 days";
+      if (state.preset === "custom") {
+        const s = state.start || "—";
+        const e = state.end || "—";
+        return `${s} → ${e}`;
+      }
+      return "";
+    }
+
+    function updateActiveSummary() {
+      activeSummary.innerHTML = "";
+
+      const tag1 = document.createElement("span");
+      tag1.className = "tag";
+      tag1.innerHTML = `<strong>Team</strong> ${state.team === "__ALL__" ? "All" : state.team}`;
+
+      const tag2 = document.createElement("span");
+      tag2.className = "tag";
+      tag2.innerHTML = `<strong>Range</strong> ${humanRangeLabel()}`;
+
+      activeSummary.appendChild(tag1);
+      activeSummary.appendChild(tag2);
+    }
+
+    function renderTable(rows) {
+      tbody.innerHTML = "";
+      if (!rows || rows.length === 0) {
         emptyState.style.display = "block";
+        emptyState.textContent = "No results for this filter. Try All Teams or a wider date range.";
         return;
       }
       emptyState.style.display = "none";
 
-      for (const r of rows) {
+      rows.forEach((r, idx) => {
+        const rank = idx + 1;
         const tr = document.createElement("tr");
+        tr.className = "rowFade";
+
+        const tdRank = document.createElement("td");
+        tdRank.className = "rankCell";
+        const medal = medalForRank(rank);
+        tdRank.innerHTML = medal
+          ? `<span class="medal" title="Rank ${rank}">${medal}</span><span class="mono">#${rank}</span>`
+          : `<span class="mono">#${rank}</span>`;
 
         const tdWinner = document.createElement("td");
+        tdWinner.className = "winnerCell";
         tdWinner.textContent = r.winner;
 
         const tdTeam = document.createElement("td");
+        tdTeam.className = "teamCell";
         tdTeam.textContent = r.team;
 
         const tdWins = document.createElement("td");
+        tdWins.className = "winsCell";
         tdWins.textContent = r.wins;
 
+        tr.appendChild(tdRank);
         tr.appendChild(tdWinner);
         tr.appendChild(tdTeam);
         tr.appendChild(tdWins);
-        tableBody.appendChild(tr);
-      }
+
+        tbody.appendChild(tr);
+      });
     }
 
-    function applyFilter(allRows) {
-      const team = teamSelect.value;
-      const filtered = team === "__ALL__" ? allRows : allRows.filter(r => r.team === team);
-      renderTable(filtered);
-    }
+    function computeLeaderboardFromEvents(events, startYmd, endYmd) {
+      const counts = new Map(); // team -> Map(winner -> count)
 
-    async function loadLeaderboard() {
-      setStatus("Loading leaderboard…");
-      const res = await fetch(`${DATA_DIR}/leaderboard.json`, { cache: "no-store" });
-      if (!res.ok) throw new Error(`Failed to load leaderboard.json (${res.status})`);
-      const rows = await res.json();
+      for (const e of events) {
+        const ed = e.date || null;
 
-      // Defensive cleanup
-      const cleaned = rows
-        .filter(r => r && typeof r.team === "string" && typeof r.winner === "string")
-        .map(r => ({ team: r.team, winner: r.winner, wins: Number(r.wins) || 0 }))
-        .filter(r => r.wins > 0);
-
-      const teams = unique(cleaned.map(r => r.team)).sort((a,b) => a.localeCompare(b));
-      renderTeamSelect(teams);
-
-      teamSelect.addEventListener("change", () => applyFilter(cleaned));
-      applyFilter(cleaned);
-
-      setStatus(`Loaded ${cleaned.length} rows`);
-      return cleaned;
-    }
-
-    async function tryLoadEvents() {
-      try {
-        const res = await fetch(`${DATA_DIR}/events.json`, { cache: "no-store" });
-        if (!res.ok) return;
-
-        const events = await res.json();
-        if (!Array.isArray(events) || events.length === 0) return;
-
-        // Sort most recent first (date null goes last)
-        events.sort((a, b) => {
-          const da = a.date || "";
-          const db = b.date || "";
-          return db.localeCompare(da);
-        });
-
-        // Show top 10
-        const top = events.slice(0, 10);
-        recentList.innerHTML = "";
-        for (const e of top) {
-          const li = document.createElement("li");
-          const d = e.date ? `${e.date} — ` : "";
-          li.textContent = `${d}${e.team}: ${e.winner} (${e.file})`;
-          recentList.appendChild(li);
+        // Date filtering
+        if (startYmd || endYmd) {
+          if (!ed) continue;
+          if (startYmd && ed < startYmd) continue;
+          if (endYmd && ed > endYmd) continue;
         }
 
-        recentCard.style.display = "block";
-      } catch {
-        // optional; ignore
+        const team = (e.team || DEFAULT_TEAM).toUpperCase();
+        const winner = e.winner || "(unknown)";
+
+        if (!counts.has(team)) counts.set(team, new Map());
+        const inner = counts.get(team);
+        inner.set(winner, (inner.get(winner) || 0) + 1);
+      }
+
+      const rows = [];
+      for (const [team, inner] of counts.entries()) {
+        for (const [winner, wins] of inner.entries()) {
+          rows.push({ team, winner, wins });
+        }
+      }
+
+      rows.sort((a, b) => {
+        if (b.wins !== a.wins) return b.wins - a.wins;
+        if (a.team !== b.team) return a.team.localeCompare(b.team);
+        return a.winner.localeCompare(b.winner);
+      });
+
+      return rows;
+    }
+
+    function getPresetStartEnd(preset) {
+      if (preset === "all") return { start: "", end: "" };
+      if (preset === "custom") return { start: state.start || "", end: state.end || "" };
+
+      const days = Number(preset);
+      const todayYmd = todayYMDInTZ();
+      const [y, m, d] = todayYmd.split("-");
+      const todayDate = new Date(`${y}-${m}-${d}T00:00:00`);
+      const startDateObj = new Date(todayDate);
+      startDateObj.setDate(startDateObj.getDate() - (days - 1));
+      return { start: dateToYMDInTZ(startDateObj), end: todayYmd };
+    }
+
+    function readStateFromURL() {
+      const params = new URLSearchParams(window.location.search);
+
+      const preset = params.get("preset");
+      const team = params.get("team");
+      const start = params.get("start");
+      const end = params.get("end");
+
+      if (preset && ["all", "7", "30", "custom"].includes(preset)) {
+        state.preset = preset;
+      }
+
+      if (team) {
+        state.team = team;
+      }
+
+      if (state.preset === "custom") {
+        if (start) state.start = start;
+        if (end) state.end = end;
       }
     }
 
-    (async function init() {
-      try {
-        await loadLeaderboard();
-        await tryLoadEvents();
-      } catch (e) {
-        setStatus("Error loading data");
-        emptyState.style.display = "block";
-        emptyState.textContent = String(e);
+    function writeStateToURL() {
+      const params = new URLSearchParams();
+
+      params.set("preset", state.preset);
+      params.set("team", state.team);
+
+      if (state.preset === "custom") {
+        if (state.start) params.set("start", state.start);
+        if (state.end) params.set("end", state.end);
       }
-    })();
+
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState(null, "", newUrl);
+    }
+
+    function applyFilters() {
+      // Validate custom
+      if (state.preset === "custom") {
+        const s = (startDateInput.value || "").trim();
+        const e = (endDateInput.value || "").trim();
+        state.start = s;
+        state.end = e;
+        if (s && e && s > e) {
+          alert("Start date must be on or before End date.");
+          return;
+        }
+      } else {
+        // keep UI inputs aligned to the computed preset window (nice clarity)
+        const { start, end } = getPresetStartEnd(state.preset);
+        startDateInput.value = start;
+        endDateInput.value = end;
+        state.start = start;
+        state.end = end;
+      }
+
+      const selectedTeam = teamSelect.value;
+      state.team = selectedTeam;
+
+      updateActiveSummary();
+
+      let rows;
+      if (state.preset === "all") {
+        rows = allLeaderboardRows.slice();
+      } else {
+        rows = computeLeaderboardFromEvents(allEvents, state.start || null, state.end || null);
+      }
+
+      // team filter
+      if (selectedTeam !== "__ALL__") {
+        rows = rows.filter(r => r.team === selectedTeam);
+      }
+
+      renderTable(rows);
+
+      // Status line
+      const range = humanRangeLabel();
+      setStatus(`Showing ${selectedTeam === "__ALL__" ? "All Teams" : selectedTeam} · ${range} · ${rows.length} rows`);
+
+      persistState();
+      writeStateToURL();
+    }
+
+    function populateRecent() {
+      if (!Array.isArray(allEvents) || allEvents.length === 0) {
+        recentSub.textContent = "No events found in events.json.";
+        recentList.innerHTML = "";
+        return;
+      }
+
+      // Sort by date desc (null last), and keep stable order otherwise
+      const sorted = allEvents.slice().sort((a, b) => {
+        const da = a.date || "";
+        const db = b.date || "";
+        if (da === db) return 0;
+        return db.localeCompare(da);
+      });
+
+      const top = sorted.slice(0, 15);
+      recentList.innerHTML = "";
+      for (const e of top) {
+        const li = document.createElement("li");
+        const d = e.date ? e.date : "—";
+        li.textContent = `${d} — ${e.team}: ${e.winner}`;
+        recentList.appendChild(li);
+      }
+
+      recentSub.textContent = `Showing the latest ${top.length} events.`;
+    }
+
+    function persistState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch { }
+    }
+
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") return;
+        if (parsed.preset) state.preset = parsed.preset;
+        if (parsed.team) state.team = parsed.team;
+        if (typeof parsed.start === "string") state.start = parsed.start;
+        if (typeof parsed.end === "string") state.end = parsed.end;
+        if (typeof parsed.recentOpen === "boolean") state.recentOpen = parsed.recentOpen;
+      } catch { }
+    }
+
+    function wireUI() {
+      // Preset buttons
+      presetBtns.all.addEventListener("click", () => { setActivePreset("all"); applyFilters(); });
+      presetBtns["7"].addEventListener("click", () => { setActivePreset("7"); applyFilters(); });
+      presetBtns["30"].addEventListener("click", () => { setActivePreset("30"); applyFilters(); });
+      presetBtns.custom.addEventListener("click", () => {
+        setActivePreset("custom");
+        // prefill custom inputs with existing state if present
+        startDateInput.value = state.start || "";
+        endDateInput.value = state.end || "";
+        updateActiveSummary();
+      });
+
+      applyBtn.addEventListener("click", applyFilters);
+
+      resetBtn.addEventListener("click", () => {
+        state.preset = "all";
+        state.team = "__ALL__";
+        state.start = "";
+        state.end = "";
+
+        // Reset UI controls
+        teamSelect.value = "__ALL__";
+        setActivePreset("all");      // also hides custom date controls
+        startDateInput.value = "";
+        endDateInput.value = "";
+
+        applyFilters();
+      });
+
+      teamSelect.addEventListener("change", applyFilters);
+
+      recentDetails.addEventListener("toggle", () => {
+        state.recentOpen = recentDetails.open;
+        persistState();
+      });
+
+      copyLinkBtn.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(window.location.href);
+          setStatus("Link copied!");
+          setTimeout(() => setStatus(""), 1500);
+        } catch {
+          setStatus("Could not copy link");
+        }
+      });
+    }
+
+    async function loadData() {
+      setHealth("off", "Loading…");
+      setStatus("Loading data…");
+
+      // Load leaderboard.json (optional but recommended)
+      try {
+        const lbResp = await fetch(`${DATA_DIR}/leaderboard.json`, { cache: "no-store" });
+        if (lbResp.ok) {
+          const rows = await lbResp.json();
+          allLeaderboardRows = Array.isArray(rows)
+            ? rows
+              .filter(r => r && typeof r.team === "string" && typeof r.winner === "string")
+              .map(r => ({ team: String(r.team).toUpperCase(), winner: r.winner, wins: Number(r.wins) || 0 }))
+              .filter(r => r.wins > 0)
+            : [];
+        } else {
+          allLeaderboardRows = [];
+        }
+      } catch {
+        allLeaderboardRows = [];
+      }
+
+      // Load events.json (required for date filtering)
+      let eventsOk = false;
+      try {
+        const evResp = await fetch(`${DATA_DIR}/events.json`, { cache: "no-store" });
+        if (evResp.ok) {
+          const ev = await evResp.json();
+          allEvents = Array.isArray(ev)
+            ? ev.map(e => ({
+              date: e.date || null,
+              team: e.team ? String(e.team).toUpperCase() : DEFAULT_TEAM,
+              winner: e.winner || "(unknown)",
+              file: e.file || ""
+            }))
+            : [];
+          eventsOk = true;
+        } else {
+          allEvents = [];
+        }
+      } catch {
+        allEvents = [];
+      }
+
+      // Teams list
+      const teamsFromEvents = unique(allEvents.map(e => e.team).filter(Boolean));
+      const teamsFromLb = unique(allLeaderboardRows.map(r => r.team).filter(Boolean));
+      teams = unique([...teamsFromEvents, ...teamsFromLb]).sort((a, b) => a.localeCompare(b));
+
+      renderTeamSelect();
+
+      // Restore state
+      teamSelect.value = teams.includes(state.team) || state.team === "__ALL__" ? state.team : "__ALL__";
+      setActivePreset(["all", "7", "30", "custom"].includes(state.preset) ? state.preset : "7");
+
+      // Setup date inputs (show computed for presets)
+      if (state.preset === "custom") {
+        startDateInput.value = state.start || "";
+        endDateInput.value = state.end || "";
+      } else {
+        const { start, end } = getPresetStartEnd(state.preset);
+        startDateInput.value = start;
+        endDateInput.value = end;
+        state.start = start;
+        state.end = end;
+      }
+
+      updateActiveSummary();
+      populateRecent();
+
+      // Recent open state
+      recentDetails.open = !!state.recentOpen;
+
+      // Health indicator
+      if (eventsOk) {
+        const eventCount = allEvents.length;
+        const lbCount = allLeaderboardRows.length;
+        setHealth("ok", `Loaded ${eventCount} events · ${lbCount} rows`);
+      } else {
+        setHealth("warn", "events.json not found");
+      }
+
+      applyFilters();
+      setStatus("Ready");
+    }
+
+    // Boot
+    loadState(); // localStorage fallback
+    readStateFromURL(); // override with URL params if present
+    wireUI();
+    loadData();
   </script>
 </body>
-</html>
 
+</html>
