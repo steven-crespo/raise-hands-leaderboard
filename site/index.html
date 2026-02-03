@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Raise Hand Winners Leaderboard</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 24px; line-height: 1.4; }
+    header { display: flex; gap: 16px; flex-wrap: wrap; align-items: baseline; }
+    h1 { margin: 0; font-size: 22px; }
+    .controls { display: flex; gap: 10px; align-items: center; }
+    select { padding: 6px 8px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 14px; }
+    th, td { border-bottom: 1px solid #e5e5e5; padding: 10px 8px; text-align: left; }
+    th { font-weight: 600; }
+    .muted { color: #666; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 18px; }
+    .card { border: 1px solid #e5e5e5; border-radius: 12px; padding: 14px; }
+    .card h2 { margin: 0 0 8px; font-size: 16px; }
+    ul { margin: 8px 0 0; padding-left: 18px; }
+    code { background: #f6f6f6; padding: 2px 6px; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Raise Hand Winners Leaderboard</h1>
+    <div class="controls">
+      <label for="teamSelect" class="muted">Team:</label>
+      <select id="teamSelect"></select>
+      <span id="status" class="muted"></span>
+    </div>
+  </header>
+
+  <div class="grid">
+    <div class="card">
+      <h2>Leaderboard</h2>
+      <table id="leaderboardTable" aria-label="Leaderboard table">
+        <thead>
+          <tr>
+            <th>Winner</th>
+            <th>Team</th>
+            <th>Wins</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <div id="emptyState" class="muted" style="display:none; margin-top:10px;">
+        No rows to display.
+      </div>
+    </div>
+
+    <div class="card" id="recentCard" style="display:none;">
+      <h2>Recent Events (optional)</h2>
+      <div class="muted">Loaded from <code>events.json</code> if present.</div>
+      <ul id="recentList"></ul>
+    </div>
+  </div>
+
+  <script>
+    const DATA_DIR = "./data";
+
+    const teamSelect = document.getElementById("teamSelect");
+    const tableBody = document.querySelector("#leaderboardTable tbody");
+    const emptyState = document.getElementById("emptyState");
+    const statusEl = document.getElementById("status");
+
+    const recentCard = document.getElementById("recentCard");
+    const recentList = document.getElementById("recentList");
+
+    function setStatus(msg) {
+      statusEl.textContent = msg || "";
+    }
+
+    function unique(arr) {
+      return [...new Set(arr)];
+    }
+
+    function renderTeamSelect(teams) {
+      teamSelect.innerHTML = "";
+
+      const optAll = document.createElement("option");
+      optAll.value = "__ALL__";
+      optAll.textContent = "All Teams";
+      teamSelect.appendChild(optAll);
+
+      for (const t of teams) {
+        const opt = document.createElement("option");
+        opt.value = t;
+        opt.textContent = t;
+        teamSelect.appendChild(opt);
+      }
+    }
+
+    function renderTable(rows) {
+      tableBody.innerHTML = "";
+
+      if (!rows.length) {
+        emptyState.style.display = "block";
+        return;
+      }
+      emptyState.style.display = "none";
+
+      for (const r of rows) {
+        const tr = document.createElement("tr");
+
+        const tdWinner = document.createElement("td");
+        tdWinner.textContent = r.winner;
+
+        const tdTeam = document.createElement("td");
+        tdTeam.textContent = r.team;
+
+        const tdWins = document.createElement("td");
+        tdWins.textContent = r.wins;
+
+        tr.appendChild(tdWinner);
+        tr.appendChild(tdTeam);
+        tr.appendChild(tdWins);
+        tableBody.appendChild(tr);
+      }
+    }
+
+    function applyFilter(allRows) {
+      const team = teamSelect.value;
+      const filtered = team === "__ALL__" ? allRows : allRows.filter(r => r.team === team);
+      renderTable(filtered);
+    }
+
+    async function loadLeaderboard() {
+      setStatus("Loading leaderboard…");
+      const res = await fetch(`${DATA_DIR}/leaderboard.json`, { cache: "no-store" });
+      if (!res.ok) throw new Error(`Failed to load leaderboard.json (${res.status})`);
+      const rows = await res.json();
+
+      // Defensive cleanup
+      const cleaned = rows
+        .filter(r => r && typeof r.team === "string" && typeof r.winner === "string")
+        .map(r => ({ team: r.team, winner: r.winner, wins: Number(r.wins) || 0 }))
+        .filter(r => r.wins > 0);
+
+      const teams = unique(cleaned.map(r => r.team)).sort((a,b) => a.localeCompare(b));
+      renderTeamSelect(teams);
+
+      teamSelect.addEventListener("change", () => applyFilter(cleaned));
+      applyFilter(cleaned);
+
+      setStatus(`Loaded ${cleaned.length} rows`);
+      return cleaned;
+    }
+
+    async function tryLoadEvents() {
+      try {
+        const res = await fetch(`${DATA_DIR}/events.json`, { cache: "no-store" });
+        if (!res.ok) return;
+
+        const events = await res.json();
+        if (!Array.isArray(events) || events.length === 0) return;
+
+        // Sort most recent first (date null goes last)
+        events.sort((a, b) => {
+          const da = a.date || "";
+          const db = b.date || "";
+          return db.localeCompare(da);
+        });
+
+        // Show top 10
+        const top = events.slice(0, 10);
+        recentList.innerHTML = "";
+        for (const e of top) {
+          const li = document.createElement("li");
+          const d = e.date ? `${e.date} — ` : "";
+          li.textContent = `${d}${e.team}: ${e.winner} (${e.file})`;
+          recentList.appendChild(li);
+        }
+
+        recentCard.style.display = "block";
+      } catch {
+        // optional; ignore
+      }
+    }
+
+    (async function init() {
+      try {
+        await loadLeaderboard();
+        await tryLoadEvents();
+      } catch (e) {
+        setStatus("Error loading data");
+        emptyState.style.display = "block";
+        emptyState.textContent = String(e);
+      }
+    })();
+  </script>
+</body>
+</html>
+
