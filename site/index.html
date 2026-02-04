@@ -899,6 +899,7 @@
               <div class="calTitle">
                 <h3 id="calMonthTitle">Month</h3>
                 <span class="hint" id="calMonthHint"></span>
+                <span class="hint">Calendar shows full month data (date filters apply to leaderboard only).</span>
               </div>
               <div class="calNav">
                 <button id="calPrev" type="button" class="secondary" title="Previous month">←</button>
@@ -1371,6 +1372,10 @@
       return `${dt.getUTCFullYear()}-${String(dt.getUTCMonth() + 1).padStart(2, "0")}-${String(dt.getUTCDate()).padStart(2, "0")}`;
     }
 
+    function inMonth(ymd, ym) {
+      return ymd.slice(0, 7) === ym;
+    }
+
     function renderMonthRibbon({ totalWins, topWinner, topWinnerWins, topTeam, topTeamWins }) {
       // Friendly empty
       if (!totalWins) {
@@ -1388,18 +1393,12 @@
     }
 
     function computeMonthSummaryAndStreakDays(ym) {
-      // Respect current filters:
-      // - team filter (state.team)
-      // - date filter bounds (inRange)
-      // Month is always the grid month (ym), but stats are limited to days in the month AND within date filter.
-
       const { first, last } = monthBounds(ym);
 
-      // Gather month events (filtered)
+      // Gather events for THIS MONTH only (team filter applies)
       const monthEvents = [];
       for (const [d, list] of eventsByDate.entries()) {
         if (d < first || d > last) continue;
-        if (!inRange(d)) continue;
 
         for (const e of list) {
           if (state.team !== "__ALL__" && String(e.team).toUpperCase() !== String(state.team).toUpperCase()) continue;
@@ -1420,14 +1419,14 @@
         teamCounts.set(team, (teamCounts.get(team) || 0) + 1);
       }
 
-      let totalWins = monthEvents.length;
+      const totalWins = monthEvents.length;
 
       // Top winner (team-aware)
       let topWinnerKey = null, topWinnerWins = 0;
       for (const [k, v] of winnerCounts.entries()) {
         if (v > topWinnerWins) { topWinnerWins = v; topWinnerKey = k; }
       }
-      let topWinner = topWinnerKey ? topWinnerKey.split("||")[1] : "—";
+      const topWinner = topWinnerKey ? topWinnerKey.split("||")[1] : "—";
 
       // Top team
       let topTeam = "—", topTeamWins = 0;
@@ -1435,15 +1434,12 @@
         if (v > topTeamWins) { topTeamWins = v; topTeam = t; }
       }
 
-      // --- Streak detection (3+ consecutive days) ---
-      // Define “winner won on a day” if they appear at least once that day (multiple teams possible).
-      // We build a set of days for each winnerKey within the *date filter* (not just month),
-      // but we only highlight days that fall within the month grid AND within date filter.
-
-      // Build day presence per winnerKey across all events in the active filter window (for streak continuity)
-      const presence = new Map(); // winnerKey -> Set(days)
+      // --- Streaks within THIS MONTH (3+ consecutive days) ---
+      // Presence: winnerKey -> Set(days in month)
+      const presence = new Map();
       for (const [d, list] of eventsByDate.entries()) {
-        if (!inRange(d)) continue; // respect filter window
+        if (d < first || d > last) continue;
+
         for (const e of list) {
           if (state.team !== "__ALL__" && String(e.team).toUpperCase() !== String(state.team).toUpperCase()) continue;
           const team = (e.team || DEFAULT_TEAM).toUpperCase();
@@ -1454,33 +1450,25 @@
         }
       }
 
-      // Identify streak days (3+) — returns Map(day -> array of streak labels)
       const streakInfoByDay = new Map(); // day -> [ "Winner (len)", ... ]
       const streakDaysSet = new Set();
 
       for (const [key, daySet] of presence.entries()) {
-        const days = Array.from(daySet).sort(); // YYYY-MM-DD lexical sort works
+        const days = Array.from(daySet).sort();
         if (days.length < 3) continue;
 
         let runStart = 0;
         for (let i = 1; i <= days.length; i++) {
           const prev = days[i - 1];
           const cur = days[i];
-
           const isConsecutive = (i < days.length) && (cur === nextDayYMD(prev));
           if (isConsecutive) continue;
 
-          // run is from runStart..i-1
-          const runLen = (i - runStart);
+          const runLen = i - runStart;
           if (runLen >= 3) {
             const winnerName = key.split("||")[1];
             for (let j = runStart; j < i; j++) {
               const day = days[j];
-
-              // only highlight in the visible month AND within filter bounds
-              if (day < first || day > last) continue;
-              if (!inRange(day)) continue;
-
               streakDaysSet.add(day);
               const label = `${winnerName} (${runLen})`;
               if (!streakInfoByDay.has(day)) streakInfoByDay.set(day, []);
@@ -1492,9 +1480,8 @@
         }
       }
 
-      // Clean up labels (dedupe)
       for (const [d, labels] of streakInfoByDay.entries()) {
-        streakInfoByDay.set(d, Array.from(new Set(labels)).slice(0, 3)); // cap for tooltip sanity
+        streakInfoByDay.set(d, Array.from(new Set(labels)).slice(0, 3));
       }
 
       return {
@@ -1523,9 +1510,10 @@
       const ym = state.month;
       calMonthTitle.textContent = ymToMonthTitle(ym);
 
-      const { start, end } = filterRangeBounds();
-      if (start || end) calMonthHint.textContent = `Filter active: ${humanRangeLabel()}`;
-      else calMonthHint.textContent = `All-time events shown`;
+      // replace your current hint logic with:
+      calMonthHint.textContent = (state.team === "__ALL__")
+        ? "Showing all teams for this month"
+        : `Showing team: ${state.team}`;
 
       // Month ribbon
       const { summary, streakDaysSet, streakInfoByDay } = computeMonthSummaryAndStreakDays(ym);
@@ -1568,12 +1556,11 @@
           return String(e.team).toUpperCase() === String(state.team).toUpperCase();
         });
 
-        const disabled = !inRange(ymd);
+        const disabled = false; // calendar ignores global date filter
 
         const cell = document.createElement("div");
         cell.className = "day";
         if (outside) cell.classList.add("outside");
-        if (disabled) cell.classList.add("disabled");
         if (ymd === today) cell.classList.add("today");
         if (ymd === selectedDay) cell.classList.add("selected");
 
@@ -1653,9 +1640,7 @@
 
       dayTitle.textContent = ymd;
       const rangeOk = inRange(ymd);
-      dayMeta.textContent = rangeOk
-        ? `${list.length} winner${list.length === 1 ? "" : "s"} on this day`
-        : `Outside current date filter · ${list.length} winner${list.length === 1 ? "" : "s"} shown`;
+      dayMeta.textContent = `${list.length} winner${list.length === 1 ? "" : "s"} on this day`;
 
       dayList.innerHTML = "";
       if (!list.length) {
