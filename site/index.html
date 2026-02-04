@@ -17,7 +17,6 @@
       --pad: 16px;
       --gap: 14px;
       --accent: #111;
-      --accent2: #2b2b2b;
       --chip: #f2f2f2;
       --chipActive: #111;
       --chipActiveText: #fff;
@@ -39,7 +38,7 @@
     }
 
     .wrap {
-      max-width: 980px;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 24px 18px 40px;
     }
@@ -93,6 +92,7 @@
       justify-content: flex-end;
       flex: 1;
       min-width: 240px;
+      flex-wrap: wrap;
     }
 
     .pill {
@@ -272,6 +272,42 @@
       font-weight: 650;
     }
 
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Views toggle */
+    .viewToggle {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .seg {
+      display: inline-flex;
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      overflow: hidden;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+    }
+
+    .seg button {
+      border: none;
+      background: transparent;
+      color: #111;
+      padding: 8px 12px;
+      font-size: 13px;
+    }
+
+    .seg button.active {
+      background: #111;
+      color: #fff;
+    }
+
     /* Table */
     .tableWrap {
       overflow: auto;
@@ -282,7 +318,7 @@
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 520px;
+      min-width: 560px;
       background: #fff;
     }
 
@@ -323,12 +359,12 @@
     }
 
     .teamCell {
-      width: 120px;
+      width: 140px;
       color: #222;
     }
 
     .winnerCell {
-      font-weight: 700;
+      font-weight: 750;
       letter-spacing: -0.1px;
     }
 
@@ -367,7 +403,254 @@
       font-size: 13px;
     }
 
-    /* Recent activity */
+    /* Calendar */
+    .calendarShell {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .calTop {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .calTitle {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .calTitle h3 {
+      margin: 0;
+      font-size: 16px;
+      letter-spacing: -0.2px;
+    }
+
+    .calNav {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .calNav button {
+      padding: 8px 10px;
+      border-radius: 12px;
+    }
+
+    .calGrid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+    }
+
+    .dow {
+      font-size: 11px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      padding: 4px 6px;
+    }
+
+    .day {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 14px;
+      padding: 10px 10px 8px;
+      min-height: 92px;
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+      cursor: pointer;
+      position: relative;
+      transition: transform .05s ease, box-shadow .15s ease;
+      overflow: hidden;
+    }
+
+    .day:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+    }
+
+    .day.outside {
+      opacity: .55;
+      background: #fcfcfc;
+    }
+
+    .day.disabled {
+      opacity: .35;
+      filter: grayscale(.1);
+    }
+
+    .day.selected {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, .12), 0 2px 8px rgba(0, 0, 0, .08);
+      border-color: #cfcfcf;
+    }
+
+    .day.today::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 12px;
+      border: 2px dashed rgba(0, 0, 0, .18);
+      pointer-events: none;
+    }
+
+    .dayNum {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+      color: #222;
+      margin-bottom: 8px;
+    }
+
+    .stack {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .chiplet {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #f7f7f7;
+      font-size: 12px;
+      max-width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .chiplet .badge {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #999;
+      flex: 0 0 auto;
+    }
+
+    .more {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .spark {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      font-size: 14px;
+      opacity: .28;
+      pointer-events: none;
+    }
+
+    .side {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: #fff;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      position: sticky;
+      top: 14px;
+    }
+
+    .side h4 {
+      margin: 0;
+      font-size: 14px;
+      letter-spacing: -0.1px;
+    }
+
+    .side .meta {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12.5px;
+    }
+
+    .sideList {
+      margin: 12px 0 0;
+      padding: 0;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .sideItem {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid var(--border);
+      background: #fafafa;
+      border-radius: 14px;
+      padding: 10px 10px;
+    }
+
+    .sideLeft {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      min-width: 0;
+    }
+
+    .sideDot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-top: 4px;
+      background: #999;
+      flex: 0 0 auto;
+    }
+
+    .sideText {
+      min-width: 0;
+    }
+
+    .sideName {
+      font-weight: 750;
+      letter-spacing: -0.1px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 240px;
+    }
+
+    .sideTeam {
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-top: 2px;
+    }
+
+    .sideFile {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .kbd {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 11px;
+      padding: 2px 6px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      color: #333;
+    }
+
     details {
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -423,10 +706,72 @@
       font-size: 13px;
     }
 
-    .mono {
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-      font-size: 12px;
-      color: var(--muted);
+    /* Month summary ribbon */
+    .ribbon {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      padding: 10px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, #fff, #fafafa);
+      box-shadow: 0 1px 0 rgba(0, 0, 0, .02);
+      margin-bottom: 10px;
+    }
+
+    .ribbon .stat {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #fff;
+      font-size: 12.5px;
+    }
+
+    .ribbon .stat strong {
+      font-weight: 750;
+    }
+
+    .ribbon .emoji {
+      font-size: 14px;
+      opacity: .9;
+    }
+
+    /* Streak highlighting */
+    .day.streak {
+      border-color: rgba(0, 0, 0, .25);
+      box-shadow:
+        0 0 0 3px rgba(255, 140, 0, .16),
+        0 1px 0 rgba(0, 0, 0, .02),
+        0 8px 18px rgba(0, 0, 0, .06);
+    }
+
+    .day.streak::after {
+      content: "🔥";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 14px;
+      opacity: .55;
+      pointer-events: none;
+    }
+
+    @media (max-width: 980px) {
+      .calendarShell {
+        grid-template-columns: 1fr;
+      }
+
+      .side {
+        position: relative;
+        top: 0;
+      }
+
+      .sideName {
+        max-width: 100%;
+      }
     }
 
     @media (max-width: 640px) {
@@ -435,7 +780,7 @@
       }
 
       table {
-        min-width: 460px;
+        min-width: 520px;
       }
 
       .statusline {
@@ -452,7 +797,7 @@
         <div class="logo">RH</div>
         <div>
           <h1>Raise Hand Winners</h1>
-          <div class="sub">A tiny leaderboard from your Obsidian daily notes.</div>
+          <div class="sub">Leaderboard + calendar view from your Obsidian daily notes.</div>
         </div>
       </div>
 
@@ -468,13 +813,26 @@
     </header>
 
     <div class="grid">
-      <!-- Filters -->
+      <!-- Filters + View toggle -->
       <div class="card">
         <div class="cardhead">
-          <h2>Filters</h2>
-          <div class="activeSummary" id="activeSummary"></div>
-          <button id="copyLinkBtn" class="secondary" type="button">Copy link</button>
+          <div style="display:flex; gap:10px; align-items:baseline; flex-wrap:wrap;">
+            <h2>Controls</h2>
+            <span class="hint">Calendar is built from <span class="mono">events.json</span>. All-time leaderboard uses
+              <span class="mono">leaderboard.json</span>.</span>
+          </div>
+
+          <div class="viewToggle">
+            <div class="seg" role="tablist" aria-label="View toggle">
+              <button id="viewLeaderboard" type="button" class="active" role="tab"
+                aria-selected="true">Leaderboard</button>
+              <button id="viewCalendar" type="button" role="tab" aria-selected="false">Calendar</button>
+            </div>
+            <button id="copyLinkBtn" class="secondary" type="button" title="Copy a shareable link">Copy link</button>
+          </div>
         </div>
+
+        <div class="activeSummary" id="activeSummary" style="margin-bottom: 12px;"></div>
 
         <div class="filters">
           <div class="filterRow">
@@ -494,7 +852,7 @@
             </div>
 
             <button id="applyBtn" type="button" title="Apply filters">Apply</button>
-            <button id="resetBtn" type="button" class="secondary" title="Reset to defaults">Reset</button>
+            <button id="resetBtn" type="button" class="secondary" title="Reset all filters">Reset</button>
           </div>
 
           <div class="filterRow">
@@ -505,12 +863,11 @@
         </div>
       </div>
 
-      <!-- Leaderboard -->
-      <div class="card">
+      <!-- Leaderboard view -->
+      <div class="card" id="leaderboardCard">
         <div class="cardhead">
           <h2>Leaderboard</h2>
-          <div class="hint">Top 3 get medals. Date-filtered views compute from <span class="mono">events.json</span>.
-          </div>
+          <div class="hint">Top 3 get medals. Use Calendar to see daily wins.</div>
         </div>
 
         <div class="tableWrap" aria-label="Leaderboard table">
@@ -519,13 +876,47 @@
               <tr>
                 <th style="width:72px;">Rank</th>
                 <th>Winner</th>
-                <th style="width:140px;">Team</th>
+                <th style="width:160px;">Team</th>
                 <th style="width:90px;">Wins</th>
               </tr>
             </thead>
             <tbody id="tbody"></tbody>
           </table>
           <div class="empty" id="emptyState" style="display:none;"></div>
+        </div>
+      </div>
+
+      <!-- Calendar view -->
+      <div class="card" id="calendarCard" style="display:none;">
+        <div class="cardhead">
+          <h2>Calendar</h2>
+          <div class="hint">Click a day for details. Greyed days are outside your date filter.</div>
+        </div>
+
+        <div class="calendarShell">
+          <div>
+            <div class="calTop">
+              <div class="calTitle">
+                <h3 id="calMonthTitle">Month</h3>
+                <span class="hint" id="calMonthHint"></span>
+              </div>
+              <div class="calNav">
+                <button id="calPrev" type="button" class="secondary" title="Previous month">←</button>
+                <button id="calToday" type="button" class="secondary" title="Jump to current month">Today</button>
+                <button id="calNext" type="button" class="secondary" title="Next month">→</button>
+              </div>
+            </div>
+
+            <div class="ribbon" id="monthRibbon" aria-label="Month summary"></div>
+            <div class="calGrid" id="calHeader"></div>
+            <div class="calGrid" id="calGrid"></div>
+          </div>
+
+          <div class="side" id="dayPanel" aria-live="polite">
+            <h4 id="dayTitle">Pick a day</h4>
+            <div class="meta" id="dayMeta">Tip: click a day cell. <span class="kbd">Esc</span> clears selection.</div>
+            <ul class="sideList" id="dayList"></ul>
+          </div>
         </div>
       </div>
 
@@ -547,15 +938,32 @@
   </div>
 
   <script>
+    // ===== Config =====
     const DATA_DIR = "./data";
     const DEFAULT_TEAM = "GAMEON";
     const TIMEZONE = "America/Los_Angeles";
 
-    // UI
+    // Team color system (consistent accents)
+    function teamColor(team) {
+      const t = String(team || DEFAULT_TEAM).toUpperCase();
+      // A tiny deterministic palette (no external libs)
+      const palette = [
+        "#111111", "#2b2b2b", "#3b3b3b",
+        "#0b7a75", "#1f6feb", "#7c3aed",
+        "#b42318", "#b54708", "#027a48"
+      ];
+      let h = 0;
+      for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) >>> 0;
+      return palette[h % palette.length];
+    }
+
+    // ===== UI =====
     const tbody = document.getElementById("tbody");
     const emptyState = document.getElementById("emptyState");
     const teamSelect = document.getElementById("teamSelect");
     const statusEl = document.getElementById("status");
+
+    const activeSummary = document.getElementById("activeSummary");
 
     const presetBtns = {
       all: document.getElementById("preset_all"),
@@ -563,16 +971,18 @@
       "30": document.getElementById("preset_30"),
       custom: document.getElementById("preset_custom"),
     };
-
-    const copyLinkBtn = document.getElementById("copyLinkBtn");
-
     const customDatesWrap = document.getElementById("customDates");
     const startDateInput = document.getElementById("startDate");
     const endDateInput = document.getElementById("endDate");
     const applyBtn = document.getElementById("applyBtn");
     const resetBtn = document.getElementById("resetBtn");
 
-    const activeSummary = document.getElementById("activeSummary");
+    const viewLeaderboardBtn = document.getElementById("viewLeaderboard");
+    const viewCalendarBtn = document.getElementById("viewCalendar");
+    const leaderboardCard = document.getElementById("leaderboardCard");
+    const calendarCard = document.getElementById("calendarCard");
+
+    const copyLinkBtn = document.getElementById("copyLinkBtn");
 
     const recentDetails = document.getElementById("recentDetails");
     const recentList = document.getElementById("recentList");
@@ -581,34 +991,60 @@
     const healthDot = document.getElementById("healthDot");
     const healthText = document.getElementById("healthText");
 
-    // Data
+    // Calendar UI
+    const calMonthTitle = document.getElementById("calMonthTitle");
+    const calMonthHint = document.getElementById("calMonthHint");
+    const monthRibbon = document.getElementById("monthRibbon");
+    const calHeader = document.getElementById("calHeader");
+    const calGrid = document.getElementById("calGrid");
+    const calPrev = document.getElementById("calPrev");
+    const calNext = document.getElementById("calNext");
+    const calToday = document.getElementById("calToday");
+    const dayTitle = document.getElementById("dayTitle");
+    const dayMeta = document.getElementById("dayMeta");
+    const dayList = document.getElementById("dayList");
+
+    // ===== Data =====
     let allLeaderboardRows = []; // precomputed all-time
     let allEvents = [];          // source of truth
     let teams = [];
+    let eventsByDate = new Map(); // ymd -> events array
 
-    // State (persisted)
-    const STORAGE_KEY = "raisehands.ui.state.v1";
+    // ===== State =====
+    const STORAGE_KEY = "raisehands.ui.state.v2";
+
     const state = {
-      preset: "7",          // default: last 7 (better for daily usage)
+      view: "leaderboard",   // 'leaderboard' | 'calendar'
+      preset: "7",           // default daily vibe; reset will go to 'all'
       team: "__ALL__",
       start: "",
       end: "",
-      recentOpen: false
+      recentOpen: false,
+      month: "",             // 'YYYY-MM' (calendar)
+      day: ""                // 'YYYY-MM-DD' selected day (calendar)
     };
 
     function setStatus(msg) { statusEl.textContent = msg || ""; }
     function unique(arr) { return [...new Set(arr)]; }
+
+    function setHealth(mode, text) {
+      healthDot.className = "dot " + (mode === "ok" ? "" : mode);
+      healthText.textContent = text;
+    }
 
     function dateToYMDInTZ(dateObj) {
       const opts = { timeZone: TIMEZONE, year: "numeric", month: "2-digit", day: "2-digit" };
       return new Intl.DateTimeFormat("en-CA", opts).format(dateObj); // YYYY-MM-DD
     }
     function todayYMDInTZ() { return dateToYMDInTZ(new Date()); }
+    function todayYMInTZ() { return todayYMDInTZ().slice(0, 7); }
 
-    function setHealth(mode, text) {
-      // mode: "ok" | "warn" | "off"
-      healthDot.className = "dot " + (mode === "ok" ? "" : mode);
-      healthText.textContent = text;
+    function ymToMonthTitle(ym) {
+      // ym = 'YYYY-MM'
+      const [y, m] = ym.split("-").map(Number);
+      const d = new Date(Date.UTC(y, (m || 1) - 1, 1));
+      const fmt = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" });
+      return fmt.format(d);
     }
 
     function medalForRank(rank) {
@@ -618,27 +1054,97 @@
       return null;
     }
 
-    function renderTeamSelect() {
-      teamSelect.innerHTML = "";
-      const optAll = document.createElement("option");
-      optAll.value = "__ALL__";
-      optAll.textContent = "All Teams";
-      teamSelect.appendChild(optAll);
+    // ===== URL state =====
+    function readStateFromURL() {
+      const params = new URLSearchParams(window.location.search);
 
-      for (const t of teams) {
-        const opt = document.createElement("option");
-        opt.value = t;
-        opt.textContent = t;
-        teamSelect.appendChild(opt);
+      const view = params.get("view");
+      const preset = params.get("preset");
+      const team = params.get("team");
+      const start = params.get("start");
+      const end = params.get("end");
+      const month = params.get("month");
+      const day = params.get("day");
+
+      if (view && ["leaderboard", "calendar"].includes(view)) state.view = view;
+      if (preset && ["all", "7", "30", "custom"].includes(preset)) state.preset = preset;
+      if (team) state.team = team;
+
+      if (state.preset === "custom") {
+        if (start) state.start = start;
+        if (end) state.end = end;
       }
+
+      if (month && /^\d{4}-\d{2}$/.test(month)) state.month = month;
+      if (day && /^\d{4}-\d{2}-\d{2}$/.test(day)) state.day = day;
     }
 
+    function writeStateToURL() {
+      const params = new URLSearchParams();
+
+      params.set("view", state.view);
+      params.set("preset", state.preset);
+      params.set("team", state.team);
+
+      if (state.preset === "custom") {
+        if (state.start) params.set("start", state.start);
+        if (state.end) params.set("end", state.end);
+      }
+
+      if (state.view === "calendar") {
+        params.set("month", state.month || todayYMInTZ());
+        if (state.day) params.set("day", state.day);
+      }
+
+      const newUrl = `${window.location.pathname}?${params.toString()}`;
+      window.history.replaceState(null, "", newUrl);
+    }
+
+    function persistState() {
+      try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { }
+    }
+    function loadState() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (!parsed || typeof parsed !== "object") return;
+        Object.assign(state, parsed);
+      } catch { }
+    }
+
+    // ===== Filters =====
     function setActivePreset(p) {
       state.preset = p;
       for (const k of Object.keys(presetBtns)) {
         presetBtns[k].classList.toggle("active", k === p);
       }
       customDatesWrap.style.display = (p === "custom") ? "flex" : "none";
+    }
+
+    function setView(v) {
+      state.view = v;
+      const isCal = v === "calendar";
+
+      viewLeaderboardBtn.classList.toggle("active", !isCal);
+      viewCalendarBtn.classList.toggle("active", isCal);
+
+      viewLeaderboardBtn.setAttribute("aria-selected", String(!isCal));
+      viewCalendarBtn.setAttribute("aria-selected", String(isCal));
+
+      leaderboardCard.style.display = isCal ? "none" : "block";
+      calendarCard.style.display = isCal ? "block" : "none";
+
+      // Ensure month is set for calendar
+      if (isCal && !state.month) state.month = todayYMInTZ();
+
+      updateActiveSummary();
+      writeStateToURL();
+      persistState();
+
+      // Render appropriate view
+      if (isCal) renderCalendar();
+      else applyFilters(); // re-render leaderboard with current state
     }
 
     function humanRangeLabel() {
@@ -656,19 +1162,73 @@
     function updateActiveSummary() {
       activeSummary.innerHTML = "";
 
-      const tag1 = document.createElement("span");
-      tag1.className = "tag";
-      tag1.innerHTML = `<strong>Team</strong> ${state.team === "__ALL__" ? "All" : state.team}`;
+      const tagTeam = document.createElement("span");
+      tagTeam.className = "tag";
+      tagTeam.innerHTML = `<strong>Team</strong> ${state.team === "__ALL__" ? "All" : state.team}`;
 
-      const tag2 = document.createElement("span");
-      tag2.className = "tag";
-      tag2.innerHTML = `<strong>Range</strong> ${humanRangeLabel()}`;
+      const tagRange = document.createElement("span");
+      tagRange.className = "tag";
+      tagRange.innerHTML = `<strong>Range</strong> ${humanRangeLabel()}`;
 
-      activeSummary.appendChild(tag1);
-      activeSummary.appendChild(tag2);
+      const tagView = document.createElement("span");
+      tagView.className = "tag";
+      tagView.innerHTML = `<strong>View</strong> ${state.view === "calendar" ? "Calendar" : "Leaderboard"}`;
+
+      activeSummary.appendChild(tagTeam);
+      activeSummary.appendChild(tagRange);
+      activeSummary.appendChild(tagView);
     }
 
-    function renderTable(rows) {
+    function getPresetStartEnd(preset) {
+      if (preset === "all") return { start: "", end: "" };
+      if (preset === "custom") return { start: state.start || "", end: state.end || "" };
+
+      const days = Number(preset);
+      const todayYmd = todayYMDInTZ();
+      const [y, m, d] = todayYmd.split("-");
+      const todayDate = new Date(`${y}-${m}-${d}T00:00:00`);
+      const startDateObj = new Date(todayDate);
+      startDateObj.setDate(startDateObj.getDate() - (days - 1));
+      return { start: dateToYMDInTZ(startDateObj), end: todayYmd };
+    }
+
+    function computeLeaderboardFromEvents(events, startYmd, endYmd) {
+      const counts = new Map(); // team -> Map(winner -> count)
+
+      for (const e of events) {
+        const ed = e.date || null;
+
+        if (startYmd || endYmd) {
+          if (!ed) continue;
+          if (startYmd && ed < startYmd) continue;
+          if (endYmd && ed > endYmd) continue;
+        }
+
+        const team = (e.team || DEFAULT_TEAM).toUpperCase();
+        const winner = e.winner || "(unknown)";
+
+        if (!counts.has(team)) counts.set(team, new Map());
+        const inner = counts.get(team);
+        inner.set(winner, (inner.get(winner) || 0) + 1);
+      }
+
+      let rows = [];
+      for (const [team, inner] of counts.entries()) {
+        for (const [winner, wins] of inner.entries()) {
+          rows.push({ team, winner, wins });
+        }
+      }
+
+      rows.sort((a, b) => {
+        if (b.wins !== a.wins) return b.wins - a.wins;
+        if (a.team !== b.team) return a.team.localeCompare(b.team);
+        return a.winner.localeCompare(b.winner);
+      });
+
+      return rows;
+    }
+
+    function renderLeaderboard(rows) {
       tbody.innerHTML = "";
       if (!rows || rows.length === 0) {
         emptyState.style.display = "block";
@@ -710,95 +1270,8 @@
       });
     }
 
-    function computeLeaderboardFromEvents(events, startYmd, endYmd) {
-      const counts = new Map(); // team -> Map(winner -> count)
-
-      for (const e of events) {
-        const ed = e.date || null;
-
-        // Date filtering
-        if (startYmd || endYmd) {
-          if (!ed) continue;
-          if (startYmd && ed < startYmd) continue;
-          if (endYmd && ed > endYmd) continue;
-        }
-
-        const team = (e.team || DEFAULT_TEAM).toUpperCase();
-        const winner = e.winner || "(unknown)";
-
-        if (!counts.has(team)) counts.set(team, new Map());
-        const inner = counts.get(team);
-        inner.set(winner, (inner.get(winner) || 0) + 1);
-      }
-
-      const rows = [];
-      for (const [team, inner] of counts.entries()) {
-        for (const [winner, wins] of inner.entries()) {
-          rows.push({ team, winner, wins });
-        }
-      }
-
-      rows.sort((a, b) => {
-        if (b.wins !== a.wins) return b.wins - a.wins;
-        if (a.team !== b.team) return a.team.localeCompare(b.team);
-        return a.winner.localeCompare(b.winner);
-      });
-
-      return rows;
-    }
-
-    function getPresetStartEnd(preset) {
-      if (preset === "all") return { start: "", end: "" };
-      if (preset === "custom") return { start: state.start || "", end: state.end || "" };
-
-      const days = Number(preset);
-      const todayYmd = todayYMDInTZ();
-      const [y, m, d] = todayYmd.split("-");
-      const todayDate = new Date(`${y}-${m}-${d}T00:00:00`);
-      const startDateObj = new Date(todayDate);
-      startDateObj.setDate(startDateObj.getDate() - (days - 1));
-      return { start: dateToYMDInTZ(startDateObj), end: todayYmd };
-    }
-
-    function readStateFromURL() {
-      const params = new URLSearchParams(window.location.search);
-
-      const preset = params.get("preset");
-      const team = params.get("team");
-      const start = params.get("start");
-      const end = params.get("end");
-
-      if (preset && ["all", "7", "30", "custom"].includes(preset)) {
-        state.preset = preset;
-      }
-
-      if (team) {
-        state.team = team;
-      }
-
-      if (state.preset === "custom") {
-        if (start) state.start = start;
-        if (end) state.end = end;
-      }
-    }
-
-    function writeStateToURL() {
-      const params = new URLSearchParams();
-
-      params.set("preset", state.preset);
-      params.set("team", state.team);
-
-      if (state.preset === "custom") {
-        if (state.start) params.set("start", state.start);
-        if (state.end) params.set("end", state.end);
-      }
-
-      const newUrl = `${window.location.pathname}?${params.toString()}`;
-      window.history.replaceState(null, "", newUrl);
-    }
-
     function applyFilters() {
-      // Validate custom
+      // Validate / sync dates
       if (state.preset === "custom") {
         const s = (startDateInput.value || "").trim();
         const e = (endDateInput.value || "").trim();
@@ -809,7 +1282,6 @@
           return;
         }
       } else {
-        // keep UI inputs aligned to the computed preset window (nice clarity)
         const { start, end } = getPresetStartEnd(state.preset);
         startDateInput.value = start;
         endDateInput.value = end;
@@ -817,48 +1289,434 @@
         state.end = end;
       }
 
-      const selectedTeam = teamSelect.value;
-      state.team = selectedTeam;
-
+      state.team = teamSelect.value;
       updateActiveSummary();
 
       let rows;
-      if (state.preset === "all") {
-        rows = allLeaderboardRows.slice();
-      } else {
-        rows = computeLeaderboardFromEvents(allEvents, state.start || null, state.end || null);
-      }
+      if (state.preset === "all") rows = allLeaderboardRows.slice();
+      else rows = computeLeaderboardFromEvents(allEvents, state.start || null, state.end || null);
 
-      // team filter
-      if (selectedTeam !== "__ALL__") {
-        rows = rows.filter(r => r.team === selectedTeam);
-      }
+      if (state.team !== "__ALL__") rows = rows.filter(r => r.team === state.team);
 
-      renderTable(rows);
+      renderLeaderboard(rows);
 
-      // Status line
       const range = humanRangeLabel();
-      setStatus(`Showing ${selectedTeam === "__ALL__" ? "All Teams" : selectedTeam} · ${range} · ${rows.length} rows`);
+      setStatus(`Showing ${state.team === "__ALL__" ? "All Teams" : state.team} · ${range} · ${rows.length} rows`);
 
-      persistState();
+      // If calendar view is active, re-render calendar (to reflect filter greying + team filter)
+      if (state.view === "calendar") {
+        renderCalendar();
+      }
+
       writeStateToURL();
+      persistState();
     }
 
+    // ===== Calendar =====
+    function buildEventsByDate() {
+      eventsByDate = new Map();
+      for (const e of allEvents) {
+        if (!e.date) continue;
+        const key = e.date;
+        if (!eventsByDate.has(key)) eventsByDate.set(key, []);
+        eventsByDate.get(key).push(e);
+      }
+
+      // Stable sort within day: team then winner
+      for (const [d, list] of eventsByDate.entries()) {
+        list.sort((a, b) => {
+          if ((a.team || "") !== (b.team || "")) return String(a.team).localeCompare(String(b.team));
+          return String(a.winner).localeCompare(String(b.winner));
+        });
+      }
+    }
+
+    function filterRangeBounds() {
+      if (state.preset === "all") return { start: null, end: null };
+      if (state.preset === "custom") return { start: state.start || null, end: state.end || null };
+      const { start, end } = getPresetStartEnd(state.preset);
+      return { start: start || null, end: end || null };
+    }
+
+    function inRange(ymd) {
+      const { start, end } = filterRangeBounds();
+      if (!start && !end) return true;
+      if (start && ymd < start) return false;
+      if (end && ymd > end) return false;
+      return true;
+    }
+
+    function monthAdd(ym, delta) {
+      const [Y, M] = ym.split("-").map(Number);
+      const d = new Date(Date.UTC(Y, (M || 1) - 1, 1));
+      d.setUTCMonth(d.getUTCMonth() + delta);
+      const y = d.getUTCFullYear();
+      const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+      return `${y}-${m}`;
+    }
+
+    function monthBounds(ym) {
+      const [Y, M] = ym.split("-").map(Number);
+      const first = new Date(Date.UTC(Y, (M || 1) - 1, 1));
+      const last = new Date(Date.UTC(Y, (M || 1) - 1 + 1, 0));
+      const ymdFirst = `${first.getUTCFullYear()}-${String(first.getUTCMonth() + 1).padStart(2, "0")}-${String(first.getUTCDate()).padStart(2, "0")}`;
+      const ymdLast = `${last.getUTCFullYear()}-${String(last.getUTCMonth() + 1).padStart(2, "0")}-${String(last.getUTCDate()).padStart(2, "0")}`;
+      return { first: ymdFirst, last: ymdLast };
+    }
+
+    function nextDayYMD(ymd) {
+      const [y, m, d] = ymd.split("-").map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d));
+      dt.setUTCDate(dt.getUTCDate() + 1);
+      return `${dt.getUTCFullYear()}-${String(dt.getUTCMonth() + 1).padStart(2, "0")}-${String(dt.getUTCDate()).padStart(2, "0")}`;
+    }
+
+    function renderMonthRibbon({ totalWins, topWinner, topWinnerWins, topTeam, topTeamWins }) {
+      // Friendly empty
+      if (!totalWins) {
+        monthRibbon.innerHTML = `
+      <span class="stat"><span class="emoji">🗓️</span><strong>This month</strong> 0 wins (with current filters)</span>
+    `;
+        return;
+      }
+
+      monthRibbon.innerHTML = `
+    <span class="stat"><span class="emoji">🧮</span><strong>Total</strong> ${totalWins} wins</span>
+    <span class="stat"><span class="emoji">👑</span><strong>Top winner</strong> ${topWinner} (${topWinnerWins})</span>
+    <span class="stat"><span class="emoji">🏁</span><strong>Top team</strong> ${topTeam} (${topTeamWins})</span>
+  `;
+    }
+
+    function computeMonthSummaryAndStreakDays(ym) {
+      // Respect current filters:
+      // - team filter (state.team)
+      // - date filter bounds (inRange)
+      // Month is always the grid month (ym), but stats are limited to days in the month AND within date filter.
+
+      const { first, last } = monthBounds(ym);
+
+      // Gather month events (filtered)
+      const monthEvents = [];
+      for (const [d, list] of eventsByDate.entries()) {
+        if (d < first || d > last) continue;
+        if (!inRange(d)) continue;
+
+        for (const e of list) {
+          if (state.team !== "__ALL__" && String(e.team).toUpperCase() !== String(state.team).toUpperCase()) continue;
+          monthEvents.push(e);
+        }
+      }
+
+      // Month summary counts
+      const winnerCounts = new Map(); // winnerKey -> wins
+      const teamCounts = new Map();   // team -> wins
+
+      for (const e of monthEvents) {
+        const team = (e.team || DEFAULT_TEAM).toUpperCase();
+        const winner = e.winner || "(unknown)";
+        const winnerKey = `${team}||${winner}`;
+
+        winnerCounts.set(winnerKey, (winnerCounts.get(winnerKey) || 0) + 1);
+        teamCounts.set(team, (teamCounts.get(team) || 0) + 1);
+      }
+
+      let totalWins = monthEvents.length;
+
+      // Top winner (team-aware)
+      let topWinnerKey = null, topWinnerWins = 0;
+      for (const [k, v] of winnerCounts.entries()) {
+        if (v > topWinnerWins) { topWinnerWins = v; topWinnerKey = k; }
+      }
+      let topWinner = topWinnerKey ? topWinnerKey.split("||")[1] : "—";
+
+      // Top team
+      let topTeam = "—", topTeamWins = 0;
+      for (const [t, v] of teamCounts.entries()) {
+        if (v > topTeamWins) { topTeamWins = v; topTeam = t; }
+      }
+
+      // --- Streak detection (3+ consecutive days) ---
+      // Define “winner won on a day” if they appear at least once that day (multiple teams possible).
+      // We build a set of days for each winnerKey within the *date filter* (not just month),
+      // but we only highlight days that fall within the month grid AND within date filter.
+
+      // Build day presence per winnerKey across all events in the active filter window (for streak continuity)
+      const presence = new Map(); // winnerKey -> Set(days)
+      for (const [d, list] of eventsByDate.entries()) {
+        if (!inRange(d)) continue; // respect filter window
+        for (const e of list) {
+          if (state.team !== "__ALL__" && String(e.team).toUpperCase() !== String(state.team).toUpperCase()) continue;
+          const team = (e.team || DEFAULT_TEAM).toUpperCase();
+          const winner = e.winner || "(unknown)";
+          const key = `${team}||${winner}`;
+          if (!presence.has(key)) presence.set(key, new Set());
+          presence.get(key).add(d);
+        }
+      }
+
+      // Identify streak days (3+) — returns Map(day -> array of streak labels)
+      const streakInfoByDay = new Map(); // day -> [ "Winner (len)", ... ]
+      const streakDaysSet = new Set();
+
+      for (const [key, daySet] of presence.entries()) {
+        const days = Array.from(daySet).sort(); // YYYY-MM-DD lexical sort works
+        if (days.length < 3) continue;
+
+        let runStart = 0;
+        for (let i = 1; i <= days.length; i++) {
+          const prev = days[i - 1];
+          const cur = days[i];
+
+          const isConsecutive = (i < days.length) && (cur === nextDayYMD(prev));
+          if (isConsecutive) continue;
+
+          // run is from runStart..i-1
+          const runLen = (i - runStart);
+          if (runLen >= 3) {
+            const winnerName = key.split("||")[1];
+            for (let j = runStart; j < i; j++) {
+              const day = days[j];
+
+              // only highlight in the visible month AND within filter bounds
+              if (day < first || day > last) continue;
+              if (!inRange(day)) continue;
+
+              streakDaysSet.add(day);
+              const label = `${winnerName} (${runLen})`;
+              if (!streakInfoByDay.has(day)) streakInfoByDay.set(day, []);
+              streakInfoByDay.get(day).push(label);
+            }
+          }
+
+          runStart = i;
+        }
+      }
+
+      // Clean up labels (dedupe)
+      for (const [d, labels] of streakInfoByDay.entries()) {
+        streakInfoByDay.set(d, Array.from(new Set(labels)).slice(0, 3)); // cap for tooltip sanity
+      }
+
+      return {
+        summary: { totalWins, topWinner, topWinnerWins, topTeam, topTeamWins },
+        streakDaysSet,
+        streakInfoByDay
+      };
+    }
+
+    function renderCalendarHeader() {
+      calHeader.innerHTML = "";
+      const dows = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+      for (const d of dows) {
+        const el = document.createElement("div");
+        el.className = "dow";
+        el.textContent = d;
+        calHeader.appendChild(el);
+      }
+    }
+
+    function renderCalendar() {
+      if (!state.month) state.month = todayYMInTZ();
+
+      renderCalendarHeader();
+
+      const ym = state.month;
+      calMonthTitle.textContent = ymToMonthTitle(ym);
+
+      const { start, end } = filterRangeBounds();
+      if (start || end) calMonthHint.textContent = `Filter active: ${humanRangeLabel()}`;
+      else calMonthHint.textContent = `All-time events shown`;
+
+      // Month ribbon
+      const { summary, streakDaysSet, streakInfoByDay } = computeMonthSummaryAndStreakDays(ym);
+      renderMonthRibbon(summary);
+
+      // Determine grid start (Monday) and end (Sunday)
+      const [Y, M] = ym.split("-").map(Number);
+      const first = new Date(Date.UTC(Y, (M || 1) - 1, 1));
+      const last = new Date(Date.UTC(Y, (M || 1) - 1 + 1, 0)); // last day of month
+
+      // Convert JS getUTCDay (Sun=0) into Monday-based index (Mon=0..Sun=6)
+      const firstDow = (first.getUTCDay() + 6) % 7;
+      const gridStart = new Date(first);
+      gridStart.setUTCDate(first.getUTCDate() - firstDow);
+
+      const lastDow = (last.getUTCDay() + 6) % 7;
+      const gridEnd = new Date(last);
+      gridEnd.setUTCDate(last.getUTCDate() + (6 - lastDow));
+
+      // Build days
+      calGrid.innerHTML = "";
+      const today = todayYMDInTZ();
+      const selectedDay = state.day || "";
+
+      const totalDays = Math.round((gridEnd - gridStart) / (24 * 3600 * 1000)) + 1;
+
+      for (let i = 0; i < totalDays; i++) {
+        const d = new Date(gridStart);
+        d.setUTCDate(gridStart.getUTCDate() + i);
+
+        const y = d.getUTCFullYear();
+        const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+        const day = String(d.getUTCDate()).padStart(2, "0");
+        const ymd = `${y}-${m}-${day}`;
+
+        const outside = ymd.slice(0, 7) !== ym;
+        const dayEvents = (eventsByDate.get(ymd) || []).filter(e => {
+          // team filter applies
+          if (state.team === "__ALL__") return true;
+          return String(e.team).toUpperCase() === String(state.team).toUpperCase();
+        });
+
+        const disabled = !inRange(ymd);
+
+        const cell = document.createElement("div");
+        cell.className = "day";
+        if (outside) cell.classList.add("outside");
+        if (disabled) cell.classList.add("disabled");
+        if (ymd === today) cell.classList.add("today");
+        if (ymd === selectedDay) cell.classList.add("selected");
+
+        if (streakDaysSet.has(ymd)) {
+          cell.classList.add("streak");
+          const labels = streakInfoByDay.get(ymd) || [];
+          if (labels.length) {
+            cell.title = `🔥 Streak day: ${labels.join(", ")}\n(click for details)`;
+          } else {
+            cell.title = "🔥 Streak day";
+          }
+        }
+
+        const top = document.createElement("div");
+        top.className = "dayNum";
+        top.innerHTML = `<span>${Number(day)}</span><span class="mono">${dayEvents.length ? "🏆" : ""}</span>`;
+        cell.appendChild(top);
+
+        const stack = document.createElement("div");
+        stack.className = "stack";
+
+        const visible = dayEvents.slice(0, 2);
+        for (const e of visible) {
+          const chip = document.createElement("div");
+          chip.className = "chiplet";
+          const c = teamColor(e.team);
+          chip.innerHTML = `<span class="badge" style="background:${c}"></span><span>${e.winner}</span>`;
+          chip.title = `${e.team}: ${e.winner}`;
+          stack.appendChild(chip);
+        }
+
+        cell.appendChild(stack);
+
+        if (dayEvents.length > 2) {
+          const more = document.createElement("div");
+          more.className = "more";
+          more.textContent = `+${dayEvents.length - 2} more`;
+          cell.appendChild(more);
+        }
+
+        if (dayEvents.length >= 3) {
+          const spark = document.createElement("div");
+          spark.className = "spark";
+          spark.textContent = "🔥";
+          cell.appendChild(spark);
+        }
+
+        cell.addEventListener("click", () => {
+          state.day = ymd;
+          // auto-jump to that month if clicking outside month
+          if (outside) state.month = ymd.slice(0, 7);
+          updateDayPanel(ymd);
+          renderCalendar(); // re-render selection ring
+          writeStateToURL();
+          persistState();
+        });
+
+        calGrid.appendChild(cell);
+      }
+
+      // If a day is selected, keep panel in sync
+      if (state.day) updateDayPanel(state.day);
+      else resetDayPanel();
+    }
+
+    function resetDayPanel() {
+      dayTitle.textContent = "Pick a day";
+      dayMeta.innerHTML = `Tip: click a day cell. <span class="kbd">Esc</span> clears selection.`;
+      dayList.innerHTML = "";
+    }
+
+    function updateDayPanel(ymd) {
+      const list = (eventsByDate.get(ymd) || []).filter(e => {
+        if (state.team === "__ALL__") return true;
+        return String(e.team).toUpperCase() === String(state.team).toUpperCase();
+      });
+
+      dayTitle.textContent = ymd;
+      const rangeOk = inRange(ymd);
+      dayMeta.textContent = rangeOk
+        ? `${list.length} winner${list.length === 1 ? "" : "s"} on this day`
+        : `Outside current date filter · ${list.length} winner${list.length === 1 ? "" : "s"} shown`;
+
+      dayList.innerHTML = "";
+      if (!list.length) {
+        const li = document.createElement("li");
+        li.className = "sideItem";
+        li.textContent = "No winners recorded for this day (with current filters).";
+        dayList.appendChild(li);
+        return;
+      }
+
+      for (const e of list) {
+        const li = document.createElement("li");
+        li.className = "sideItem";
+
+        const left = document.createElement("div");
+        left.className = "sideLeft";
+
+        const dot = document.createElement("div");
+        dot.className = "sideDot";
+        dot.style.background = teamColor(e.team);
+
+        const text = document.createElement("div");
+        text.className = "sideText";
+
+        const name = document.createElement("div");
+        name.className = "sideName";
+        name.textContent = e.winner;
+
+        const team = document.createElement("div");
+        team.className = "sideTeam";
+        team.textContent = e.team;
+
+        const file = document.createElement("div");
+        file.className = "sideFile";
+        file.textContent = e.file ? `Note: ${e.file}` : "";
+
+        text.appendChild(name);
+        text.appendChild(team);
+        if (e.file) text.appendChild(file);
+
+        left.appendChild(dot);
+        left.appendChild(text);
+
+        li.appendChild(left);
+        dayList.appendChild(li);
+      }
+    }
+
+    // ===== Recent =====
     function populateRecent() {
       if (!Array.isArray(allEvents) || allEvents.length === 0) {
         recentSub.textContent = "No events found in events.json.";
         recentList.innerHTML = "";
         return;
       }
-
-      // Sort by date desc (null last), and keep stable order otherwise
       const sorted = allEvents.slice().sort((a, b) => {
         const da = a.date || "";
         const db = b.date || "";
         if (da === db) return 0;
         return db.localeCompare(da);
       });
-
       const top = sorted.slice(0, 15);
       recentList.innerHTML = "";
       for (const e of top) {
@@ -867,67 +1725,108 @@
         li.textContent = `${d} — ${e.team}: ${e.winner}`;
         recentList.appendChild(li);
       }
-
       recentSub.textContent = `Showing the latest ${top.length} events.`;
     }
 
-    function persistState() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-      } catch { }
-    }
+    // ===== Wiring =====
+    function renderTeamSelect() {
+      teamSelect.innerHTML = "";
+      const optAll = document.createElement("option");
+      optAll.value = "__ALL__";
+      optAll.textContent = "All Teams";
+      teamSelect.appendChild(optAll);
 
-    function loadState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (!raw) return;
-        const parsed = JSON.parse(raw);
-        if (!parsed || typeof parsed !== "object") return;
-        if (parsed.preset) state.preset = parsed.preset;
-        if (parsed.team) state.team = parsed.team;
-        if (typeof parsed.start === "string") state.start = parsed.start;
-        if (typeof parsed.end === "string") state.end = parsed.end;
-        if (typeof parsed.recentOpen === "boolean") state.recentOpen = parsed.recentOpen;
-      } catch { }
+      for (const t of teams) {
+        const opt = document.createElement("option");
+        opt.value = t;
+        opt.textContent = t;
+        teamSelect.appendChild(opt);
+      }
     }
 
     function wireUI() {
-      // Preset buttons
+      // View toggle
+      viewLeaderboardBtn.addEventListener("click", () => setView("leaderboard"));
+      viewCalendarBtn.addEventListener("click", () => setView("calendar"));
+
+      // Presets
       presetBtns.all.addEventListener("click", () => { setActivePreset("all"); applyFilters(); });
       presetBtns["7"].addEventListener("click", () => { setActivePreset("7"); applyFilters(); });
       presetBtns["30"].addEventListener("click", () => { setActivePreset("30"); applyFilters(); });
       presetBtns.custom.addEventListener("click", () => {
         setActivePreset("custom");
-        // prefill custom inputs with existing state if present
         startDateInput.value = state.start || "";
         endDateInput.value = state.end || "";
         updateActiveSummary();
+        writeStateToURL();
+        persistState();
       });
 
       applyBtn.addEventListener("click", applyFilters);
 
+      // Reset should reset completely: All time + All teams + Leaderboard view
       resetBtn.addEventListener("click", () => {
+        state.view = "leaderboard";
         state.preset = "all";
         state.team = "__ALL__";
         state.start = "";
         state.end = "";
+        state.month = todayYMInTZ();
+        state.day = "";
 
-        // Reset UI controls
+        // UI
         teamSelect.value = "__ALL__";
-        setActivePreset("all");      // also hides custom date controls
+        setActivePreset("all");
         startDateInput.value = "";
         endDateInput.value = "";
 
+        setView("leaderboard");
         applyFilters();
+        resetDayPanel();
+
+        writeStateToURL();
+        persistState();
       });
 
       teamSelect.addEventListener("change", applyFilters);
 
-      recentDetails.addEventListener("toggle", () => {
-        state.recentOpen = recentDetails.open;
+      // Calendar navigation
+      calPrev.addEventListener("click", () => {
+        state.month = monthAdd(state.month || todayYMInTZ(), -1);
+        state.day = ""; // clear selection when paging months
+        renderCalendar();
+        writeStateToURL();
         persistState();
       });
 
+      calNext.addEventListener("click", () => {
+        state.month = monthAdd(state.month || todayYMInTZ(), +1);
+        state.day = "";
+        renderCalendar();
+        writeStateToURL();
+        persistState();
+      });
+
+      calToday.addEventListener("click", () => {
+        state.month = todayYMInTZ();
+        state.day = todayYMDInTZ();
+        renderCalendar();
+        writeStateToURL();
+        persistState();
+      });
+
+      // Esc clears selected day in calendar
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          state.day = "";
+          resetDayPanel();
+          if (state.view === "calendar") renderCalendar();
+          writeStateToURL();
+          persistState();
+        }
+      });
+
+      // Copy link
       copyLinkBtn.addEventListener("click", async () => {
         try {
           await navigator.clipboard.writeText(window.location.href);
@@ -937,13 +1836,20 @@
           setStatus("Could not copy link");
         }
       });
+
+      // Recent open state
+      recentDetails.addEventListener("toggle", () => {
+        state.recentOpen = recentDetails.open;
+        persistState();
+      });
     }
 
+    // ===== Data load =====
     async function loadData() {
       setHealth("off", "Loading…");
       setStatus("Loading data…");
 
-      // Load leaderboard.json (optional but recommended)
+      // leaderboard.json (optional)
       try {
         const lbResp = await fetch(`${DATA_DIR}/leaderboard.json`, { cache: "no-store" });
         if (lbResp.ok) {
@@ -961,7 +1867,7 @@
         allLeaderboardRows = [];
       }
 
-      // Load events.json (required for date filtering)
+      // events.json (required for calendar + date filtering)
       let eventsOk = false;
       try {
         const evResp = await fetch(`${DATA_DIR}/events.json`, { cache: "no-store" });
@@ -983,18 +1889,27 @@
         allEvents = [];
       }
 
-      // Teams list
+      // Build team list
       const teamsFromEvents = unique(allEvents.map(e => e.team).filter(Boolean));
       const teamsFromLb = unique(allLeaderboardRows.map(r => r.team).filter(Boolean));
       teams = unique([...teamsFromEvents, ...teamsFromLb]).sort((a, b) => a.localeCompare(b));
 
       renderTeamSelect();
 
-      // Restore state
-      teamSelect.value = teams.includes(state.team) || state.team === "__ALL__" ? state.team : "__ALL__";
+      buildEventsByDate();
+      populateRecent();
+
+      // Health
+      if (eventsOk) {
+        setHealth("ok", `Loaded ${allEvents.length} events · ${allLeaderboardRows.length} rows`);
+      } else {
+        setHealth("warn", "events.json not found");
+      }
+
+      // Apply restored UI
+      teamSelect.value = (state.team === "__ALL__" || teams.includes(state.team)) ? state.team : "__ALL__";
       setActivePreset(["all", "7", "30", "custom"].includes(state.preset) ? state.preset : "7");
 
-      // Setup date inputs (show computed for presets)
       if (state.preset === "custom") {
         startDateInput.value = state.start || "";
         endDateInput.value = state.end || "";
@@ -1006,29 +1921,35 @@
         state.end = end;
       }
 
-      updateActiveSummary();
-      populateRecent();
+      if (!state.month) state.month = todayYMInTZ();
 
-      // Recent open state
+      updateActiveSummary();
+
+      // recent open state
       recentDetails.open = !!state.recentOpen;
 
-      // Health indicator
-      if (eventsOk) {
-        const eventCount = allEvents.length;
-        const lbCount = allLeaderboardRows.length;
-        setHealth("ok", `Loaded ${eventCount} events · ${lbCount} rows`);
+      // Render view
+      if (state.view === "calendar") {
+        setView("calendar");
       } else {
-        setHealth("warn", "events.json not found");
+        setView("leaderboard");
       }
 
-      applyFilters();
       setStatus("Ready");
     }
 
-    // Boot
-    loadState(); // localStorage fallback
-    readStateFromURL(); // override with URL params if present
+    // ===== Boot =====
+    loadState();        // localStorage fallback
+    readStateFromURL(); // URL overrides
     wireUI();
+
+    // Ensure reset semantics: "Reset" goes to All-time + All-teams + Leaderboard
+    // but defaults remain last-7 for casual daily viewing (state.preset="7").
+    if (!state.month) state.month = todayYMInTZ();
+
+    // If URL asks for calendar but no month, default to current month
+    if (state.view === "calendar" && !state.month) state.month = todayYMInTZ();
+
     loadData();
   </script>
 </body>
