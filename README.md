@@ -8,6 +8,8 @@ A lightweight internal dashboard that visualizes daily standup
 - Hosted on GitHub Pages
 
 ## Update data
+Ex: node extract.js "/Users/<user>/Documents/Obsidian Vault/Work/Daily Notes" "./site/data"
+
 ```bash
 node extract.js "<path-to-vault>" "./site/data"
 git commit -am "Update data"

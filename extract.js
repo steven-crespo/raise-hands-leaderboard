@@ -204,13 +204,21 @@ function buildLeaderboardRows(events) {
 }
 
 function isoWithLocalTZ(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
+  const ms = String(date.getMilliseconds()).padStart(3, "0");
+
   const tzOffsetMin = date.getTimezoneOffset();
   const sign = tzOffsetMin > 0 ? "-" : "+";
   const abs = Math.abs(tzOffsetMin);
   const hh = String(Math.floor(abs / 60)).padStart(2, "0");
   const mm = String(abs % 60).padStart(2, "0");
 
-  return date.toISOString().replace("Z", `${sign}${hh}:${mm}`);
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${ms}${sign}${hh}:${mm}`;
 }
 
 function main() {
