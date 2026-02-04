@@ -809,6 +809,9 @@
         <span class="pill" title="Where data is loaded from">
           <span class="mono">data/leaderboard.json + data/events.json</span>
         </span>
+        <span class="pill" id="updatedPill" style="display:none;">
+          <span id="updatedText" class="mono"></span>
+        </span>
       </div>
     </header>
 
@@ -963,6 +966,8 @@
     const emptyState = document.getElementById("emptyState");
     const teamSelect = document.getElementById("teamSelect");
     const statusEl = document.getElementById("status");
+    const updatedPill = document.getElementById("updatedPill");
+    const updatedText = document.getElementById("updatedText");
 
     const activeSummary = document.getElementById("activeSummary");
 
@@ -1053,6 +1058,20 @@
       if (rank === 2) return "🥈";
       if (rank === 3) return "🥉";
       return null;
+    }
+
+    function formatUpdated(ts) {
+      try {
+        const d = new Date(ts);
+        return d.toLocaleString(undefined, {
+          month: "short",
+          day: "numeric",
+          hour: "numeric",
+          minute: "2-digit"
+        });
+      } catch {
+        return ts;
+      }
     }
 
     // ===== URL state =====
@@ -1872,6 +1891,20 @@
         }
       } catch {
         allEvents = [];
+      }
+
+      // meta.json (last updated)
+      try {
+        const metaResp = await fetch(`${DATA_DIR}/meta.json`, { cache: "no-store" });
+        if (metaResp.ok) {
+          const meta = await metaResp.json();
+          if (meta.lastUpdated) {
+            updatedText.textContent = `Updated ${formatUpdated(meta.lastUpdated)}`;
+            updatedPill.style.display = "inline-flex";
+          }
+        }
+      } catch {
+        // optional; ignore if missing
       }
 
       // Build team list

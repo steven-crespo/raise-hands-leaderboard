@@ -203,6 +203,16 @@ function buildLeaderboardRows(events) {
   return rows;
 }
 
+function isoWithLocalTZ(date = new Date()) {
+  const tzOffsetMin = date.getTimezoneOffset();
+  const sign = tzOffsetMin > 0 ? "-" : "+";
+  const abs = Math.abs(tzOffsetMin);
+  const hh = String(Math.floor(abs / 60)).padStart(2, "0");
+  const mm = String(abs % 60).padStart(2, "0");
+
+  return date.toISOString().replace("Z", `${sign}${hh}:${mm}`);
+}
+
 function main() {
   const sourceDir =
     process.argv[2] || "/Users/stevencrespo/Documents/Obsidian Vault/Work/Daily Notes";
@@ -234,6 +244,14 @@ function main() {
   const leaderboardPath = path.join(outDir, "leaderboard.json");
   fs.writeFileSync(leaderboardPath, JSON.stringify(leaderboardRows, null, 2), "utf8");
   console.log(`Wrote ${leaderboardRows.length} leaderboard rows to:\n  ${leaderboardPath}`);
+
+  // Write meta.json (last updated timestamp)
+  const meta = {
+    lastUpdated: isoWithLocalTZ(new Date())
+  };
+
+  const metaPath = path.join(outDir, "meta.json");
+  fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2), "utf8");
 }
 
 main();
